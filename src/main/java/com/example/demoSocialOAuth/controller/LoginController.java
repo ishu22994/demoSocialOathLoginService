@@ -1,7 +1,6 @@
 package com.example.demoSocialOAuth.controller;//package com.training.loginservice.controller;
 
 
-
 import com.example.demoSocialOAuth.config.JwtGenerator;
 import com.example.demoSocialOAuth.dto.FacebookDTO;
 import com.example.demoSocialOAuth.dto.UserDTO;
