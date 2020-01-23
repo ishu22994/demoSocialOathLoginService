@@ -4,12 +4,12 @@ package com.example.demoSocialOAuth.model;
 public class UserInfo {
 
    private String firstName;
-   private String lastName;
+
    private String email;
 
-    public UserInfo(String firstName, String lastName,String email) {
+    public UserInfo(String firstName,String email) {
         this.firstName = firstName;
-        this.lastName = lastName;
+
         this.email = email;
 
     }
@@ -26,13 +26,6 @@ public class UserInfo {
         this.firstName = firstName;
     }
 
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
 
     public String getEmail() {
         return email;

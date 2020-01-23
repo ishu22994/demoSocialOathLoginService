@@ -1,3 +1,4 @@
+/*
 package com.example.demoSocialOAuth.controller;//package com.training.loginservice.controller;
 
 
@@ -35,9 +36,10 @@ public class SpringGoogleController {
     @GetMapping("/googleLoginaccess")
     public String googleprofiledata(@RequestParam String accessToken){
         Person user= googleService.getGoogleUserProfile(accessToken);
-        UserInfo userInfo=new UserInfo(user.getGivenName(),user.getDisplayName(),user.getImageUrl());
+        UserInfo userInfo=new UserInfo(user.getGivenName(),user.getImageUrl());
         //fetch all the details of user to our main database of user
         return userInfo.getEmail();
     }
 
 }
+*/
