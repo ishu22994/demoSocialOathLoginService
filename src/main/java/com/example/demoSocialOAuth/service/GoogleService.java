@@ -4,6 +4,6 @@ import com.example.demoSocialOAuth.entity.UserEntity;
 
 public interface GoogleService {
 
-    UserEntity getGmailDetails(String accessToken);
+    UserEntity getGmailDetails(String idToken);
 
 }

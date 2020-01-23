@@ -11,10 +11,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 
@@ -55,23 +52,24 @@ public class LoginController {
 
     }
 
-    @PostMapping("/googlelogin")
-    public String gmailLogin(String accessToken) {
+    @GetMapping("/googlelogin/{idToken}")
+    public String googlelogin(@PathVariable("idToken")  String idToken) {
         System.out.println("Inside gmail login");
-        UserEntity user=googleService.getGmailDetails(accessToken);
+        UserEntity user=googleService.getGmailDetails(idToken);
         if(user!=null)
-            return accessToken;
+            return idToken;
         else
             return "User Not Found";
     }
 
-    @PostMapping("/facebooklogin")
-    public String facebookLogin(@RequestBody String accessToken) {
+    @GetMapping("/facebooklogin/{accessToken}")
+    public String facebookLogin(@PathVariable("accessToken") String accessToken) {
         FacebookDTO userDTO=(new RestTemplate()).getForObject("https://graph.facebook.com/me?fields=name,id,email,first_name,last_name&access_token=" + accessToken , FacebookDTO.class);
         if(userDTO!=null){
             System.out.println(userDTO.getEmail());
             UserEntity user=new UserEntity();
             user.setEmail(userDTO.getEmail());
+            user.setUserId(userDTO.getId());
             loginServices.save(user);
             return accessToken;
         }

@@ -36,19 +36,16 @@ public class GoogleServiceImpl implements GoogleService {
     }
     public GoogleIdTokenVerifier getGoogleIdTokenVerifier() {
         return new GoogleIdTokenVerifier.Builder
-                (httpTransport, JSON_FACTORY).setAudience(googleAppClientIdList).build();
+                (httpTransport, JSON_FACTORY).setAudience(null).build();
     }
 
     @Override
-    public UserEntity getGmailDetails(String accessToken) {
-        System.out.println("Inside Gmail Details");
+    public UserEntity getGmailDetails(String idToken) {
         UserEntity user = new UserEntity();
         try {
-            GoogleIdToken verifyGoogleIdToken = getGoogleIdTokenVerifier().verify(accessToken);
+            GoogleIdToken verifyGoogleIdToken = getGoogleIdTokenVerifier().verify(idToken);
             if (verifyGoogleIdToken != null) {
-                System.out.println("Inside verifyGoogleIDToken");
                 user.setEmail(verifyGoogleIdToken.getPayload().getEmail());
-                System.out.println(verifyGoogleIdToken.getPayload().getEmail());
                 loginServices.save(user);
             } else {
                 System.out.println("Not valid Token");
