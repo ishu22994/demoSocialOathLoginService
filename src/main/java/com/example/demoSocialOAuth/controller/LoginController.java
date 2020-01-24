@@ -2,9 +2,11 @@ package com.example.demoSocialOAuth.controller;//package com.training.loginservi
 
 
 import com.example.demoSocialOAuth.config.JwtGenerator;
+import com.example.demoSocialOAuth.dto.AccessTokenDto;
 import com.example.demoSocialOAuth.dto.FacebookDTO;
 import com.example.demoSocialOAuth.dto.UserDTO;
 import com.example.demoSocialOAuth.entity.UserEntity;
+import com.example.demoSocialOAuth.repository.LoginRepository;
 import com.example.demoSocialOAuth.service.GoogleService;
 import com.example.demoSocialOAuth.service.LoginServices;
 import org.springframework.beans.BeanUtils;
@@ -23,10 +25,14 @@ public class LoginController {
     LoginServices loginServices;
 
     @Autowired
+    LoginRepository loginRepository;
+
+    @Autowired
     JwtGenerator jwtGenerator = new JwtGenerator();
 
     @Autowired
     GoogleService googleService;
+
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody UserDTO userDTO)
@@ -38,43 +44,57 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody UserDTO userDTO){
+    public AccessTokenDto login(@RequestBody UserDTO userDTO){
         //System.out.println(userDTO.getEmail());
+        AccessTokenDto accessTokenDto = new AccessTokenDto();
         UserEntity userEntity=new UserEntity();
         BeanUtils.copyProperties(userDTO,userEntity);
-        boolean userExist = loginServices.findByEmail(userEntity);
-        if(userExist){
+        UserEntity userExist = loginServices.findByEmail(userEntity);
+        if(userExist != null){
            String accessToken =  jwtGenerator.generateToken(userEntity);
-           return new ResponseEntity<String>(accessToken,HttpStatus.CREATED);
+           accessTokenDto.setAccessToken(accessToken);
+           accessTokenDto.setUserId(userExist.getUserId());
+           return accessTokenDto;
         }else{
-            return new ResponseEntity<String>("User is Invalid",HttpStatus.CREATED);
+            return new AccessTokenDto();
         }
 
     }
 
     @GetMapping("/googlelogin/{idToken}")
-    public String googlelogin(@PathVariable("idToken")  String idToken) {
+    public AccessTokenDto googlelogin(@PathVariable("idToken")  String idToken) {
         System.out.println("Inside gmail login");
         UserEntity user=googleService.getGmailDetails(idToken);
-        if(user!=null)
-            return idToken;
-        else
-            return "User Not Found";
+        if(user!=null) {
+            String Token = jwtGenerator.generateToken(user);
+            AccessTokenDto accessTokenDto = new AccessTokenDto();
+            accessTokenDto.setUserId(user.getUserId());
+            accessTokenDto.setAccessToken(Token);
+            return accessTokenDto;
+        }else
+            return new AccessTokenDto();
     }
 
     @GetMapping("/facebooklogin/{accessToken}")
-    public String facebookLogin(@PathVariable("accessToken") String accessToken) {
+    public AccessTokenDto facebookLogin(@PathVariable("accessToken") String accessToken) {
         FacebookDTO userDTO=(new RestTemplate()).getForObject("https://graph.facebook.com/me?fields=name,id,email,first_name,last_name&access_token=" + accessToken , FacebookDTO.class);
         if(userDTO!=null){
             System.out.println(userDTO.getEmail());
             UserEntity user=new UserEntity();
             user.setEmail(userDTO.getEmail());
             user.setUserId(userDTO.getId());
-            loginServices.save(user);
-            return accessToken;
+            UserEntity user1 =  loginRepository.findByEmail(user.getEmail());
+            if(user1 == null){
+                loginServices.save(user);
+            }
+            String Token =  jwtGenerator.generateToken(user);
+            String userId = user.getUserId();
+            AccessTokenDto accessTokenDto=new AccessTokenDto();
+            accessTokenDto.setUserId(userId);
+            accessTokenDto.setAccessToken(Token);
+            return accessTokenDto;
         }
-        else
-            return "User Not Found";
+       return  new AccessTokenDto();
     }
 
 

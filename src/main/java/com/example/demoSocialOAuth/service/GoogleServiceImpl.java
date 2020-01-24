@@ -1,6 +1,7 @@
 package com.example.demoSocialOAuth.service;
 
 import com.example.demoSocialOAuth.entity.UserEntity;
+import com.example.demoSocialOAuth.repository.LoginRepository;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
@@ -24,6 +25,11 @@ public class GoogleServiceImpl implements GoogleService {
     @Autowired
     LoginServices loginServices;
 
+    @Autowired
+    LoginRepository loginRepository;
+
+
+
     private static final String GOOGLE_APP_CLIENT_ID = "959388190902-n2h383o5ej00boqakorh0qn4iodcnd95.apps.googleusercontent.com";
     @Value(GOOGLE_APP_CLIENT_ID)
     private List<String> googleAppClientIdList;
@@ -46,7 +52,13 @@ public class GoogleServiceImpl implements GoogleService {
             GoogleIdToken verifyGoogleIdToken = getGoogleIdTokenVerifier().verify(idToken);
             if (verifyGoogleIdToken != null) {
                 user.setEmail(verifyGoogleIdToken.getPayload().getEmail());
-                loginServices.save(user);
+                UserEntity user1 =  loginRepository.findByEmail(user.getEmail());
+                if(user1==null){
+                    loginServices.save(user);
+                }
+                else{
+                    return user1;
+                }
             } else {
                 System.out.println("Not valid Token");
             }

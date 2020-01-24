@@ -17,15 +17,14 @@ public class LoginServicesImpl implements LoginServices {
     }
 
     @Override
-    public boolean findByEmail(UserEntity userEntity) {
+    public UserEntity findByEmail(UserEntity userEntity) {
         UserEntity user =  loginRepository.findByEmail(userEntity.getEmail());
         String pass1 = String.valueOf(user.getPassword().hashCode());
         String pass2 = String.valueOf(userEntity.getPassword().hashCode());
         if(pass1.equals(pass2) && user != null){
-            return true;
-        }else{
-            return false;
+            return user;
         }
+        return  user;
     }
 
 

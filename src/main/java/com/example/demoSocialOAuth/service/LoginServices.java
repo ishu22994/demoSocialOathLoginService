@@ -7,5 +7,5 @@ public interface LoginServices {
 
     UserEntity save(UserEntity userEntity);
 
-    boolean findByEmail(UserEntity userEntity);
+    UserEntity findByEmail(UserEntity userEntity);
 }
