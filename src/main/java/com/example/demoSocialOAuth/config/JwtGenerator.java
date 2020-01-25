@@ -15,19 +15,17 @@ public class JwtGenerator {
     private String secret;
 
 
-    public UserEntity parseToken(String token) {
+    public String parseToken(String token) {
         try {
             Claims body = Jwts.parser()
                     .setSigningKey(secret)
                     .parseClaimsJws(token)
                     .getBody();
 
-            UserEntity u = new UserEntity();
-            u.setUserName(body.getSubject());
-            u.setUserId(((String) body.get("userId")));
+            String id = (String) body.get("userId");
 
 
-            return u;
+            return id;
 
         } catch (JwtException | ClassCastException e) {
             e.printStackTrace();
