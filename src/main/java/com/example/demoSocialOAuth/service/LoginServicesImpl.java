@@ -1,15 +1,22 @@
 package com.example.demoSocialOAuth.service;
 
+import com.example.demoSocialOAuth.entity.LoginTable;
 import com.example.demoSocialOAuth.entity.UserEntity;
 import com.example.demoSocialOAuth.repository.LoginRepository;
+import com.example.demoSocialOAuth.repository.LoginTableRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class LoginServicesImpl implements LoginServices {
 
     @Autowired
     LoginRepository loginRepository;
+
+    @Autowired
+    LoginTableRepository loginTableRepository;
 
     @Override
     public UserEntity save(UserEntity userEntity) {
@@ -28,6 +35,10 @@ public class LoginServicesImpl implements LoginServices {
         }
     }
 
+    @Override
+    public List<LoginTable> getLoginLog(String userId) {
+        return loginTableRepository.findByUserId(userId);
+    }
 
 
 }
