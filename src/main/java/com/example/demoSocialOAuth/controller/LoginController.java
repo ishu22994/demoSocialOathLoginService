@@ -79,7 +79,6 @@ public class LoginController {
 
     @GetMapping("/facebooklogin/{accessToken}")
     public AccessTokenDto facebookLogin(@PathVariable("accessToken") String accessToken) {
-        System.out.println(accessToken+"HI MANASSSSS");
         FacebookDTO userDTO=(new RestTemplate()).getForObject("https://graph.facebook.com/me?fields=name,id,email,first_name,last_name&access_token=" + accessToken , FacebookDTO.class);
         if(userDTO!=null){
             System.out.println(userDTO.getEmail());
