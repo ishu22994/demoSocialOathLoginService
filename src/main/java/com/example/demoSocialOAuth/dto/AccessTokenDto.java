@@ -9,5 +9,5 @@ public class AccessTokenDto {
     String userId;
     String accessToken;
     boolean check;
-
+    String email;
 }

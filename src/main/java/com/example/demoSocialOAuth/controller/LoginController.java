@@ -40,6 +40,7 @@ public class LoginController {
         BeanUtils.copyProperties(userDTO,userEntity);
         UserEntity userCreated=loginServices.save(userEntity);
         accessTokenDto.setUserId(userCreated.getUserId());
+        accessTokenDto.setEmail(userCreated.getEmail());
         return new AccessTokenDto();
     }
 
@@ -54,6 +55,7 @@ public class LoginController {
            String accessToken =  jwtGenerator.generateToken(userEntity);
            accessTokenDto.setAccessToken(accessToken);
            accessTokenDto.setUserId(userExist.getUserId());
+           accessTokenDto.setEmail(userExist.getEmail());
            accessTokenDto.setCheck(true);
            return accessTokenDto;
         }else{
@@ -72,6 +74,7 @@ public class LoginController {
             AccessTokenDto accessTokenDto = new AccessTokenDto();
             accessTokenDto.setUserId(user.getUserId());
             accessTokenDto.setAccessToken(Token);
+            accessTokenDto.setEmail(user.getEmail());
             return accessTokenDto;
         }else
             return new AccessTokenDto();
@@ -94,6 +97,7 @@ public class LoginController {
             AccessTokenDto accessTokenDto=new AccessTokenDto();
             accessTokenDto.setUserId(userId);
             accessTokenDto.setAccessToken(Token);
+            accessTokenDto.setEmail(user.getEmail());
             return accessTokenDto;
         }
        return  new AccessTokenDto();
