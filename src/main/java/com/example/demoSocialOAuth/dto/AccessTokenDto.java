@@ -8,5 +8,6 @@ import lombok.Setter;
 public class AccessTokenDto {
     String userId;
     String accessToken;
+    boolean check;
 
 }

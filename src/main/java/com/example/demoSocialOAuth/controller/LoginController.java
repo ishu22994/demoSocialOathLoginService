@@ -54,8 +54,10 @@ public class LoginController {
            String accessToken =  jwtGenerator.generateToken(userEntity);
            accessTokenDto.setAccessToken(accessToken);
            accessTokenDto.setUserId(userExist.getUserId());
+           accessTokenDto.setCheck(true);
            return accessTokenDto;
         }else{
+            accessTokenDto.setCheck(false);
             return new AccessTokenDto();
         }
 
