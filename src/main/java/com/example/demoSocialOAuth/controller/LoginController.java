@@ -33,12 +33,14 @@ public class LoginController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody UserDTO userDTO)
+    public AccessTokenDto register(@RequestBody UserDTO userDTO)
     {
+        AccessTokenDto accessTokenDto = new AccessTokenDto();
         UserEntity userEntity=new UserEntity();
         BeanUtils.copyProperties(userDTO,userEntity);
         UserEntity userCreated=loginServices.save(userEntity);
-        return new ResponseEntity<String>(userCreated.getUserId(),HttpStatus.CREATED);
+        accessTokenDto.setUserId(userCreated.getUserId());
+        return new AccessTokenDto();
     }
 
     @PostMapping("/login")
@@ -75,6 +77,7 @@ public class LoginController {
 
     @GetMapping("/facebooklogin/{accessToken}")
     public AccessTokenDto facebookLogin(@PathVariable("accessToken") String accessToken) {
+        System.out.println(accessToken+"HI MANASSSSS");
         FacebookDTO userDTO=(new RestTemplate()).getForObject("https://graph.facebook.com/me?fields=name,id,email,first_name,last_name&access_token=" + accessToken , FacebookDTO.class);
         if(userDTO!=null){
             System.out.println(userDTO.getEmail());
