@@ -31,12 +31,16 @@ public class LoginServicesImpl implements LoginServices {
 
     @Override
     public UserEntity findByEmail(UserEntity userEntity) {
+
+
         UserEntity user = loginRepository.findByEmail(userEntity.getEmail());
+        if(user == null) return null;
         String pass1 = String.valueOf(user.getPassword().hashCode());
         String pass2 = String.valueOf(userEntity.getPassword().hashCode());
-        if (pass1.equals(pass2) && user != null) {
+        if (pass1.equals(pass2)  && user != null) {
             return user;
         } else {
+
             return null;
         }
     }
