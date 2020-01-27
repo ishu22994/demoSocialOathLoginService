@@ -47,14 +47,20 @@ public class LoginController {
         UserEntity userEntity=new UserEntity();
         BeanUtils.copyProperties(userDTO,userEntity);
         UserEntity userCreated=loginServices.save(userEntity);
-        accessTokenDto.setUserId(userCreated.getUserId());
-        accessTokenDto.setEmail(userCreated.getEmail());
-        return new AccessTokenDto();
+        if(userCreated != null){
+            accessTokenDto.setUserId(userCreated.getUserId());
+            accessTokenDto.setEmail(userCreated.getEmail());
+            accessTokenDto.setCheck(true);
+            return accessTokenDto;
+        }else{
+            accessTokenDto.setCheck(false);
+            return accessTokenDto;
+        }
+
     }
 
     @PostMapping("/login")
     public AccessTokenDto login(@RequestBody UserDTO userDTO){
-        //System.out.println(userDTO.getEmail());
         AccessTokenDto accessTokenDto = new AccessTokenDto();
         UserEntity userEntity=new UserEntity();
         BeanUtils.copyProperties(userDTO,userEntity);
@@ -86,6 +92,7 @@ public class LoginController {
             accessTokenDto.setUserId(user.getUserId());
             accessTokenDto.setAccessToken(Token);
             accessTokenDto.setEmail(user.getEmail());
+            accessTokenDto.setCheck(true);
             LoginTable loginTable = new LoginTable();
             loginTable.setUserId(user.getUserId());
             loginTableRepository.save(loginTable);
@@ -111,6 +118,7 @@ public class LoginController {
             AccessTokenDto accessTokenDto=new AccessTokenDto();
             accessTokenDto.setUserId(userId);
             accessTokenDto.setAccessToken(Token);
+            accessTokenDto.setCheck(true);
             accessTokenDto.setEmail(user.getEmail());
             LoginTable loginTable = new LoginTable();
             loginTable.setUserId(user.getUserId());
@@ -122,7 +130,7 @@ public class LoginController {
 
     @GetMapping(value ="/loginLog/{userId}")
     public List<LoginTable> getLoginLog(@PathVariable("userId") String userId){
-        System.out.println("Inside Logi log");
+        System.out.println("Inside Login log");
         return loginServices.getLoginLog(userId);
     }
 

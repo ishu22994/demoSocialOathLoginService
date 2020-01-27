@@ -20,7 +20,13 @@ public class LoginServicesImpl implements LoginServices {
 
     @Override
     public UserEntity save(UserEntity userEntity) {
-        return loginRepository.save(userEntity);
+        UserEntity userEntity1 = loginRepository.findByEmail(userEntity.getEmail());
+        if(userEntity1 == null){
+            return loginRepository.save(userEntity);
+        }else{
+            return null;
+        }
+
     }
 
     @Override
