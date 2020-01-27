@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -132,6 +133,14 @@ public class LoginController {
     public List<LoginTable> getLoginLog(@PathVariable("userId") String userId){
         System.out.println("Inside Login log");
         return loginServices.getLoginLog(userId);
+    }
+
+    @GetMapping(value = "/profile/{userId}")
+    public UserDTO getProfile(@PathVariable("userId") String userId){
+        UserDTO userDTO = new UserDTO();
+        Optional<UserEntity> userEntity =loginRepository.findById(userId);
+        BeanUtils.copyProperties(userEntity.get(),userDTO);
+        return userDTO;
     }
 
 
